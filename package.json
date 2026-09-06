@@ -1,0 +1,35 @@
+{
+  "name": "waterdrop-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run format:check && npm test && npm run build",
+    "fetch:reference": "python3 scripts/fetch_reference.py"
+  },
+  "dependencies": {
+    "three": "0.185.1"
+  },
+  "devDependencies": {
+    "prettier": "3.9.6",
+    "vite": "6.4.3"
+  },
+  "description": "An interactive Three.js / WebGL 2 waterdrop filter for arbitrary masks, text and brush strokes.",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seasnakes/waterdrop-lab.git"
+  },
+  "bugs": {
+    "url": "https://github.com/seasnakes/waterdrop-lab/issues"
+  },
+  "homepage": "https://github.com/seasnakes/waterdrop-lab#readme"
+}

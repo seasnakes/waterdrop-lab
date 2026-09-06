@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f7f8" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%236550dc' d='M32 4C24 18 10 31 10 43a22 22 0 0044 0C54 31 40 18 32 4z'/%3E%3C/svg%3E"
+    />
+    <title>水滴实验室 · Waterdrop Lab</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <a class="brand" href="./"
+          ><span class="brand-mark">◒</span><span>水滴实验室 <small>WATERDROP LAB</small></span></a
+        >
+        <div class="header-right">
+          <span class="live"><i></i> 本地实时渲染</span
+          ><a
+            href="https://discuss.pixls.us/t/recreating-the-ibis-waterdrop-filter-with-gmic/48166"
+            target="_blank"
+            rel="noreferrer"
+            >灵感来源 ↗</a
+          ><button id="export" class="primary">↓ <span>导出 PNG</span></button>
+        </div>
+      </header>
+      <main>
+        <section class="workspace">
+          <div class="intro">
+            <div>
+              <div class="eyebrow">EXPERIMENT 01 / REFRACTION</div>
+              <h1>让光，流过你的形状。</h1>
+              <p>把文字、笔触和图形变成一滴透明的水。</p>
+            </div>
+            <span class="edition">交互滤镜 / 001</span>
+          </div>
+          <div class="canvas-shell">
+            <div class="canvas-toolbar">
+              <div class="toolgroup">
+                <button
+                  class="tool active"
+                  data-tool="light"
+                  title="拖动光源"
+                  aria-label="拖动光源"
+                >
+                  ☼</button
+                ><button class="tool" data-tool="draw" title="绘制水滴" aria-label="绘制水滴">
+                  ✎</button
+                ><button class="tool" data-tool="erase" title="擦除水滴" aria-label="擦除水滴">
+                  ▱</button
+                ><span class="tool-divider"></span
+                ><button id="undo" class="tool" title="撤销笔触" aria-label="撤销笔触" disabled>
+                  ↶</button
+                ><button id="clear" class="tool" title="清空蒙版" aria-label="清空蒙版">⌫</button>
+              </div>
+              <div class="canvas-tools-right">
+                <button id="compare" aria-pressed="false">◐ 对比原图</button
+                ><button id="reset" title="恢复默认设置">↺ 重置</button>
+              </div>
+            </div>
+            <div class="stage-wrap">
+              <div id="stage">
+                <canvas id="render" aria-label="水滴滤镜交互画布"></canvas
+                ><canvas id="drawing" aria-hidden="true"></canvas>
+                <div id="light-marker" aria-hidden="true"><span></span></div>
+                <div id="busy" role="status">正在生成水滴曲面…</div>
+                <div id="fallback" hidden></div>
+                <div id="compare-label" hidden>原图 <span>← 拖动分界 →</span> 水滴</div>
+                <div id="compare-line" hidden></div>
+              </div>
+            </div>
+            <div class="canvas-footer">
+              <span id="hint">☼ 在画布上拖动，改变光源方向</span
+              ><span id="render-state">初始化…</span>
+            </div>
+          </div>
+          <div class="bottom-row">
+            <div class="note">
+              <span>01</span>
+              <div>
+                <b>像透镜一样，看见折射。</b>
+                <p>调大「背景距离」，观察水滴里的图像从正向变为倒像。</p>
+              </div>
+            </div>
+            <button id="reference-preset" class="text-link">载入原帖测试图与蒙版 ↗</button>
+          </div>
+          <details class="about">
+            <summary>效果原理与参考</summary>
+            <p>
+              基于蒙版构建平滑高度场，Three.js
+              着色器通过曲面法线计算两次折射，再叠加菲涅耳反射、高光和内阴影。背景可以平铺，折射距离增大时会出现倒像。为视觉近似实现，并非
+              ibisPaint 的原始算法。
+            </p>
+            <p>
+              <a
+                href="https://discuss.pixls.us/t/recreating-the-ibis-waterdrop-filter-with-gmic/48166"
+                target="_blank"
+                rel="noreferrer"
+                >PIXLS.US 原帖与对比图</a
+              >
+              ·
+              <a
+                href="https://ibispaint.com/lecture/index.jsp?lang=en&no=144"
+                target="_blank"
+                rel="noreferrer"
+                >ibisPaint 官方水滴滤镜教程</a
+              >
+              ·
+              <a
+                href="https://d2x313g9lpht1q.cloudfront.net/optimized/3X/3/9/391b0cece0eb7d9ca36b5e1c88a91cd9d00e728f_2_690x299.png"
+                target="_blank"
+                >查看原帖效果对照</a
+              >
+            </p>
+            <p>
+              原帖测试图片和蒙版为可选素材，仅用于效果对照，权利归原作者。其余内置背景由程序绘制。导入的图片只在你的浏览器中处理。
+            </p>
+          </details>
+        </section>
+        <aside class="panel" aria-label="滤镜参数">
+          <div class="panel-heading">
+            <span>效果设置</span><small>实时预览 <i></i></small>
+          </div>
+          <section class="control-section">
+            <div class="section-title">
+              <h2>水滴形状</h2>
+              <span>01</span>
+            </div>
+            <div class="segments" id="shapes">
+              <button data-shape="drops" class="selected">水滴</button
+              ><button data-shape="shapes">几何</button><button data-shape="text">文字</button
+              ><button data-shape="custom">自定义</button>
+            </div>
+            <div id="text-settings" hidden>
+              <input
+                id="water-text"
+                maxlength="18"
+                value="FLOW"
+                aria-label="水滴文字"
+                placeholder="输入文字"
+              />
+            </div>
+            <div class="shape-row" id="drop-settings">
+              <label
+                >分布密度<input
+                  id="density"
+                  type="range"
+                  min="8"
+                  max="70"
+                  value="28"
+                  aria-label="水滴密度" /></label
+              ><button id="shuffle" title="重新分布水滴">⤨ 换一组</button>
+            </div>
+            <div id="custom-settings" hidden>
+              <button id="upload-mask" class="upload wide">＋ 导入蒙版</button>
+              <div class="small-row">
+                <label for="mask-mode">蒙版读取</label
+                ><select id="mask-mode">
+                  <option value="auto">自动识别</option>
+                  <option value="alpha">透明度</option>
+                  <option value="white">白色为水滴</option>
+                  <option value="black">黑色为水滴</option>
+                </select>
+              </div>
+            </div>
+            <div class="brush-settings" hidden>
+              <label for="brush">画笔大小</label
+              ><input id="brush" type="range" min="6" max="160" value="60" />
+            </div>
+          </section>
+          <section class="control-section">
+            <div class="section-title">
+              <h2>透镜质感</h2>
+              <span>02</span>
+            </div>
+            <div id="lens-controls"></div>
+            <div class="preset-chips">
+              <button data-preset="soft" class="chosen">清透水滴</button
+              ><button data-preset="glass">厚玻璃</button
+              ><button data-preset="inverted">倒像透镜</button>
+            </div>
+          </section>
+          <section class="control-section">
+            <div class="section-title">
+              <h2>光与阴影</h2>
+              <span>03</span>
+            </div>
+            <div id="light-controls"></div>
+            <div class="light-caption">
+              <span class="sun-icon">☼</span>
+              <p>选中光源工具后，拖动画布调整方向。</p>
+            </div>
+          </section>
+          <section class="control-section">
+            <div class="section-title">
+              <h2>背景画布</h2>
+              <span>04</span>
+            </div>
+            <div class="backgrounds">
+              <button class="bg-thumb selected" data-bg="poster" aria-label="薄荷海报">
+                <span class="mint-art">Aa</span><small>薄荷海报</small></button
+              ><button class="bg-thumb" data-bg="spectrum" aria-label="流动色谱">
+                <span class="spectrum-art"></span><small>流动色谱</small></button
+              ><button class="bg-thumb" data-bg="grid" aria-label="标尺网格">
+                <span class="grid-art">Aa</span><small>标尺网格</small>
+              </button>
+            </div>
+            <button id="upload-bg" class="upload wide">
+              ＋ 导入自己的图片 <span>JPG / PNG / WEBP</span>
+            </button>
+            <div class="small-row">
+              <label for="wrap">边缘延展</label
+              ><select id="wrap">
+                <option value="repeat">重复平铺</option>
+                <option value="mirror">镜像平铺</option>
+                <option value="clamp">边缘拉伸</option>
+              </select>
+            </div>
+            <div class="small-row">
+              <label for="view">查看图层</label
+              ><select id="view">
+                <option value="0">最终效果</option>
+                <option value="1">蒙版</option>
+                <option value="2">高度场</option>
+                <option value="3">法线</option>
+              </select>
+            </div>
+          </section>
+          <div class="privacy">◈ 图片在本地处理，无需上传。</div>
+        </aside>
+      </main>
+      <footer class="site-footer">
+        <span>WATERDROP LAB</span><span>一点形状，一点光。</span
+        ><span>Made with Three.js + WebGL</span>
+      </footer>
+    </div>
+    <input id="file-bg" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+    <input id="file-mask" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+    <div id="toast" role="status" hidden></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

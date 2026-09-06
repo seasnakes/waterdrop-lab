@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.DS_Store
+
+# Machine-local settings and generated files
+.env
+.env.*
+!.env.example
+*.log
+__pycache__/
+.venv/
+coverage/
+.playwright-mcp/
+
+# Optional third-party reference images (fetch separately).
+public/reference/*.png

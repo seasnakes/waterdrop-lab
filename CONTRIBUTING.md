@@ -26,3 +26,8 @@ build output, credentials or personal paths to commits.
 
 The CI workflow runs formatting, numerical tests and a production build. It does
 not claim cross-browser or GPU rendering coverage.
+
+On `main`, the workflow also fetches checksum-verified reference images and deploys
+the checked build to GitHub Pages. Pull requests cannot publish the site. The Vite
+build uses relative asset paths, so JavaScript, CSS and the height-field Worker must
+continue to work under the `/waterdrop-lab/` project path.

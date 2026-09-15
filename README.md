@@ -8,6 +8,14 @@
 
 Interactive waterdrop optics for arbitrary masks, text and brush strokes, built with Three.js and WebGL 2.
 
+## 在线体验
+
+**[打开 Waterdrop Lab](https://seasnakes.github.io/waterdrop-lab/)**
+
+无需安装。支持图片和蒙版导入、文字与手绘、实时调光、原图对比和 PNG 导出。导入的图片只在浏览器中处理。
+
+GitHub Pages 由本仓库的 Actions 工作流发布：`main` 更新后，先校验参考素材、运行格式检查与数值测试，再构建和部署 `dist/`。PR 只执行检查，不发布。参考图片在部署时获取，不进入 Git 历史。
+
 ## 从源码运行
 
 需要 Node.js 22 或更新版本，以及支持 WebGL 2 的浏览器。
@@ -45,7 +53,9 @@ npm run preview
 npm run fetch:reference
 ```
 
-下载完成后再启动开发服务或重新构建，即可使用「载入原帖测试图与蒙版」。下载器检查 SHA-256，正常开发和 CI 无需这些文件。详情见 [素材来源说明](public/reference/README.md)。
+下载完成后再启动开发服务或重新构建，即可使用「载入原帖测试图与蒙版」。下载器检查 SHA-256，内置示例与数值测试无需这些文件。详情见 [素材来源说明](public/reference/README.md)。
+
+线上 Pages 演示已由部署流程准备这些素材，可以直接载入。
 
 ## 怎么试
 
@@ -146,7 +156,7 @@ npm test             # 曲面数值验证
 npm run check        # 格式检查 + 测试 + 生产构建
 ```
 
-GitHub Actions 在 main 推送和 PR 时运行上述检查，并保存构建产物。CI 不运行 GPU 视觉测试。开发约定见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+GitHub Actions 在 main 推送和 PR 时运行上述检查，并保存构建产物。main 检查通过后自动部署 GitHub Pages，PR 不触发部署。CI 不运行 GPU 视觉测试。开发约定见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## 验证和范围
 
